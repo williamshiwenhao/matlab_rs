@@ -2,18 +2,15 @@ function [ output ] = RsEncode( input )
 %RsEncode RS编码模块
 %   此处显示详细说明
 batch = size(input, 1);
-input_ = zeros(batch, GfTable.n);
-gx = ones(batch, GfTable.n);
-for i=1:batch
-    gx(i,1:length(GfTable.generater)) = GfTable.generater;
+output = zeros(batch, GfTable.n);
+output(GfTable.r+1:end) = input;
+for ii = GfTable.k:-1:1
+    k = RsSymbolAdd(output(:,GfTable.r), input(:,ii));
+    for jj = GfTable.r : -1: 2
+        output(:,jj) = RsSymbolAdd(RsSymbolMul(k, GfTable.generater(jj)), output(:,jj-1));
+    end
+    output(:,1) = RsSymbolMul(GfTable.generater(1), k );
 end
-input_(:,1:size(input,2)) = input;
-disp(gx);
-disp(input_)
-output = RsPolyMul(input_, gx)
-
-
-
-
+disp(output);
 end
 

@@ -11,4 +11,3 @@ alphaOutput = mod(alphaA + alphaB, 15);
 output = GfTable.GetGf(alphaOutput+1);
 
 end
-
