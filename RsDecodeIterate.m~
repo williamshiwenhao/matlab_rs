@@ -38,10 +38,10 @@ for jj = 2:GfTable.r+1
         ii = iMax;
         
         % Cal sigma
-        dMul = RsSymbolMul(d(:,jj), RsSymbolRev(d(:,ii)));
+        dMul = RsSymbolMul(d(jj), RsSymbolRev(d(ii)));
         rPoly = zeros(1, GfTable.r+1);
         rPoly(jj - ii+1) = dMul;
-        rPoly = RsPolyMul(rPoly, sigma(ii, :));
+        rPoly = RsPolyMul(rPoly, sigma(jj, :));
         sigma(jj+1, :) = RsPolySub(sigma(jj, :), rPoly);
         % Get D(jj+1)
         for kk = GfTable.r+1 : -1 : 1
@@ -60,7 +60,8 @@ for jj = 2:GfTable.r+1
         d(:,jj+1)=RsSymbolAdd(d(:,jj+1) , RsSymbolMul(S(jj-kk), sigma(jj+1, kk+1)));
     end
 end
+d
 errPosPolyCalc = sigma(end, :);
-sigma=sigma(2:end, :);
+sigma=sigma(2:end, :)
 end
 
