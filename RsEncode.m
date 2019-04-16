@@ -11,6 +11,5 @@ for ii = GfTable.k:-1:1
     end
     output(:,1) = RsSymbolMul(GfTable.generater(1), k );
 end
-disp(output);
 end
 

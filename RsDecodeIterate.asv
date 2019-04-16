@@ -1,0 +1,60 @@
+function [errPosPolyCalc, sigma  ] = RsDecodeIterate( S )
+%RsDecodeIterate
+batch = size(S, 1);
+sigma = zeros(GfTable.r+1, GfTable.r+1);
+sigma(1,1)=1;
+d = zeros(batch, GfTable.r+2);
+di = 1;
+D = zeros(batch , GfTable.r+1);
+ii = -1;
+for jj = 1: GfTable.r
+    
+    dj = S(:, jj);
+    if dj==0
+        sigma(jj+1, :) = sigma(jj, :);
+        D(jj+1) = D(jj);
+    else
+        % get ii
+        iMax = 0;
+        iValueMax = 0;
+        for index = 1 : jj-1
+            tmp = index - D(index);
+            if tmp > iValueMax
+                iValueMax = tmp;
+                iMax = index;
+            end
+        end
+        ii = iMax;
+        % Get di, handle ii == 0
+        if ii == 0
+            di = 1;
+        else
+            di = d(:, ii);
+        end
+        % Cal sigma
+        disp(di);
+        dMul = RsSymbolMul(d(jj), RsSymbolRev(di));
+        rPoly = zeros(1, GfTable.r+1);
+        rPoly(jj - ii + 1) = dMul;
+        sigma(jj+1, :) = rPoly;
+        % Get D(jj+1)
+        for kk = GfTable.r+1 : -1 : 1
+            if sigma(jj+1, kk) ~= 0
+                D(jj+1) = kk - 1;
+                break;
+            end
+        end
+    end
+    if jj == GfTable.r
+        break;
+    end
+    % Get next d
+    d(:jj+1) = S(jj);
+    for kk = 1:D(jj+1)
+        d(:jj+1)=RsSymbolAdd(d(:,jj+1) , RsSymbolMul(S(jj+1-kk), sigma(kk+1, jj+1)));
+    end
+    errPosPolyCalc = sigma(end, :);
+end
+
+end
+
