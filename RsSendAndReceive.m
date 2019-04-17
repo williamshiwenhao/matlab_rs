@@ -1,6 +1,7 @@
-function [ numErrorSymbol ] = RsSendAndReceive( snr , batch  )
+function [ numErrorSymbol, numErrorFrame ] = RsSendAndReceive( snr , batch  )
 %RsSendAndReceive 完成一个batch的测试
-for batchNum = 1: batch
+errorSymbol = zeros(1, batch);
+parfor batchNum = 1: batch
     %% Generate and encode
     % Generate input
     source = randi([0,15], 1, GfTable.k);
@@ -17,13 +18,24 @@ for batchNum = 1: batch
     deModulation = zeros(1, length(channelOutput));
     deModulation(real(channelOutput) < 0) = 1;
     % Change to gf 2^4
-    channelOutput = BinaryToGf(deModulation)
+    channelOutput = BinaryToGf(deModulation);
     
     %% Decode and correct
-    
-    
+    S = RsDecodeCalcSynd(channelOutput);
+    [sigma, ~] = RsDecodeIterate(S);
+    root = RsDecodeRoot(sigma);
+    [errorValue, errorPos] = RsDecodeForney(S, sigma, root);
+    for ii = 1:length(errorPos)
+        if errorPos(ii) ~= -1 && errorValue(ii)~= 0
+            channelOutput(:,errorPos(ii)+1) = RsSymbolSub(channelOutput(:,errorPos(ii) +1), errorValue(:,ii));
+        end
+    end
+    decoded = channelOutput(:,GfTable.r+1: end);
+    errorSymbol(1,batchNum) = sum(decoded ~= source);
     
 end
+numErrorSymbol = sum(errorSymbol);
+numErrorFrame = sum(errorSymbol ~= 0);
 end
 
 %% Utilities
