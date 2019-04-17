@@ -2,17 +2,16 @@
 function test
 Batch = 1e2;
 % 0 error test
-errorNum = 4;
-
-generate_data(Batch, errorNum);
-
-load('test_data.mat');
+errorNum = 1;
 failed = 0;
+
+load('test
+
 for ii = 1:Batch
     decode = Decode(encode(ii,:));
     if sum(decode ~= source(ii, :)) ~= 0
-        pos(ii, :);
-        value(ii, :);
+        pos(ii, :)
+        value(ii, :)
         failed = failed + 1;
     end
 end
@@ -26,8 +25,8 @@ function [decoded] = Decode(encoded)
 S = RsDecodeCalcSynd(encoded);
 [sigma, ~] = RsDecodeIterate(S);
 root = RsDecodeRoot(sigma);
-[errorValue, errorPos] = RsDecodeForney(S, sigma, root);
-for ii = 1:length(errorPos)
+[errorValue, errorPos] = RsDecodeForney(S, sigma, root)
+for ii = 1:2
     if errorPos(ii) ~= -1 && errorValue(ii)~= 0
         encoded(:,errorPos(ii)+1) = RsSymbolSub(encoded(:,errorPos(ii) +1), errorValue(:,ii));
     end
@@ -56,12 +55,12 @@ end
 end
 
 %% generate data
-function generate_data(Batch, errorNum)
+function generate_data
 source = zeros(Batch, GfTable.k);
 encode = zeros(Batch, GfTable.n);
 pos = zeros(Batch, errorNum);
 value = zeros(Batch, errorNum);
-
+save('test_data.mat');
 for ii = 1:Batch
     source(ii, :) = Generater(GfTable.k);
     encode(ii, :) = RsEncode(source(ii, :));
@@ -70,5 +69,4 @@ for ii = 1:Batch
         encode(ii, :) = RsPolyAdd(encode(ii, :), noise);
     end
 end
-save('test_data.mat');
 end

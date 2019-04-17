@@ -28,8 +28,6 @@ for N = 0:1:2*Rs.t-1
             Dj = RsSymbolAdd(Dj,RsSymbolMul(SigmaJ(i+1),SyndromCalc(N+1-i)));
         end
     end
-    Di
-    Dj
     if(Dj ~= 0)
         if(2*L>N)
             Poly = RsPolyMul([zeros(1,x) RsSymbolMul(Dj,RsSymbolRev(Di))],SigmaI);
@@ -44,7 +42,6 @@ for N = 0:1:2*Rs.t-1
             Di = Dj;
             x = 1;
         end
-        Poly
     else
         x = x+1;
     end

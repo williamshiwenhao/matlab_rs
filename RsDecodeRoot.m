@@ -1,15 +1,33 @@
 function [root] = RsDecodeRoot(errPosPoly)
 %RsDecoderRoot ÊÔÌ½·¨Çó¸ù
-root = [0,0];
-for root1 = 0:15
-    for root2 = root1:15
-        if RsPolyMul([1, root1, 0],[1,root2, 0]) == errPosPoly(:,1:3)
-            root = [root1, root2];
-            return ;
-        end
+% Get root num
+rootNum = 0;
+for kk = length(errPosPoly):-1:1
+    if errPosPoly(kk) ~= 0
+        rootNum = kk -1;
     end
 end
-disp('do not find root');
+root = zeros(1, rootNum);
+index = 1;
+for ii = 0 : 15
+    sum = CalPol(errPosPoly, ii);
+    if sum == 0
+        root(:, index) = ii;
+        index = index + 1;
+    end
+end
+root = root(1:index-1);
+
+end
+
+%%
+function [output] = CalPol(pol, x)
+xx = x;
+output = pol(1);
+for ii = 2 : length(pol)
+    output = RsSymbolAdd(output, RsSymbolMul(xx, pol(ii)));
+    xx = RsSymbolMul(xx, x);
+end
 
 end
 
