@@ -3,16 +3,19 @@ function [errorValue, errorPos] = RsDecodeForney(S, sigma, root)
 
 %%
 %Get error position
-errorPos1 = 0;
-errorPos2 = 0;
+errorPos1 = -1;
+errorPos2 = -1;
 if root(1) ~= 0
     errorPos1 = GfTable.GetAlpha(RsSymbolRev(root(1)));
 end
 if root(2) ~= 0
     errorPos2 = GfTable.GetAlpha(RsSymbolRev(root(2)));
 end
-errorPos = [errorPos1, errorPos2];
 
+errorPos = [errorPos1, errorPos2];
+if max(errorPos) >= 15
+    disp(errorPos);
+end
 %%
 S_ = [S, zeros(1, GfTable.r)];
 sigma_ = [sigma, zeros(1, GfTable.r*2 - size(sigma, 2))];
