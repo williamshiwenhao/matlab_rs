@@ -1,18 +1,19 @@
 % Test
+% ±¾ÎÄ¼þ
 function test
-Batch = 1e2;
+Batch = 1e4;
 % 0 error test
-errorNum = 4;
+errorNum = 2;
 
-generate_data(Batch, errorNum);
+%generate_data(Batch, errorNum);
 
 load('test_data.mat');
 failed = 0;
-for ii = 1:Batch
+parfor ii = 1:Batch
     decode = Decode(encode(ii,:));
     if sum(decode ~= source(ii, :)) ~= 0
-        pos(ii, :);
-        value(ii, :);
+        pos(ii, :)
+        value(ii, :)
         failed = failed + 1;
     end
 end
@@ -62,7 +63,7 @@ encode = zeros(Batch, GfTable.n);
 pos = zeros(Batch, errorNum);
 value = zeros(Batch, errorNum);
 
-for ii = 1:Batch
+parfor ii = 1:Batch
     source(ii, :) = Generater(GfTable.k);
     encode(ii, :) = RsEncode(source(ii, :));
     if errorNum ~= 0
