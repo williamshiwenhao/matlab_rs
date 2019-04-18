@@ -1,23 +1,25 @@
 % Test
 % ±¾ÎÄ¼þ
 function test
-Batch = 1e4;
+Batch = 1e2;
 % 0 error test
-errorNum = 2;
+errorNum = 5;
 
-%generate_data(Batch, errorNum);
+generate_data(Batch, errorNum);
 
 load('test_data.mat');
-failed = 0;
-parfor ii = 1:Batch
+errorSymbol = 0;
+errorFrame = 0;
+for ii = 1:Batch
     decode = Decode(encode(ii,:));
+    errorSymbol = errorSymbol + sum(decode~=source(ii,:));
+    
     if sum(decode ~= source(ii, :)) ~= 0
-        pos(ii, :)
-        value(ii, :)
-        failed = failed + 1;
+        errorFrame = errorFrame + 1;
     end
 end
-disp(failed);
+errorSymbol
+errorFrame
 end
 
 
